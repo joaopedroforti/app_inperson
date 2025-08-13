@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/employee/edit/{cpf}', [EmployeeController::class, 'update'])->name('Perfil');
     Route::post('/employee/new', [EmployeeController::class, 'store'])->name('employee-new');
-    Route::post('/candidate/new', [TalentsController::class, 'store'])->name('employee-new');
+    Route::post('/candidate/new', [TalentsController::class, 'store'])->name('candidate-new');
     Route::get('/employee/profile/{cpf}', [EmployeeController::class, 'profile'])->name('Perfil Comportamental');
     Route::get('/employee/list', [EmployeeController::class, 'list'])->name('Colaboradores');
     Route::get('/bancotalentos', [TalentsController::class, 'index'])->name('Banco de Talentos');
