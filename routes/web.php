@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/empresa/{id}/endereco', [CompanyController::class, 'endereco']);
 Route::get('/job/new', [JobRoleController::class, 'new'])->name('Adicionar Cargo');
 Route::get('/jobrole/edit/{reference}', [JobRoleController::class, 'edit'])->name('Editar Cargo');
-Route::post('/job/new', [JobRoleController::class, 'store'])->name('Cargos');
+Route::post('/job/new', [JobRoleController::class, 'store'])->name('Cargo-new');
 Route::get('/job', [JobRoleController::class, 'list'])->name('Cargos');
 Route::get('/matcher', [MatcherController::class, 'index'])->name('Matcher');
 Route::post('updatestep/{cpf}/{step}', [EmployeeController::class, 'updateStep']);
