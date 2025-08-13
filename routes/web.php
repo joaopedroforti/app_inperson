@@ -42,9 +42,8 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 // Rotas protegidas por autenticação
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index']);
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
-
+    Route::get('/', [DashboardController::class, 'index'])->name('Dashboard');
+    Route::redirect('/dashboard', '/'); // 302 padrão
 
 
     Route::get('/treinamentos', [DashboardController::class, 'treinamentos'])->name('Treinamentos');
