@@ -1,0 +1,58 @@
+{
+  "menu": [
+    {
+      "url": "",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ti ti-dashboard",
+      "slug": "colaboradores"
+    },
+    {
+      "url": "/employee/list",
+      "name": "Colaboradores",
+      "icon": "menu-icon tf-icons ti ti-users",
+      "slug": "colaboradores"
+    },
+    {
+      "name": "Engenharia de Cargos",
+      "icon": "menu-icon tf-icons ti ti-briefcase",
+      "slug": "Cargo",
+      "submenu": [
+        {
+          "url": "/job",
+          "name": "Cargos",
+          "slug": "cargos"
+        },
+        {
+          "url": "/departments",
+          "name": "Departamentos",
+          "slug": "/departments"
+        }
+      ]
+    },
+    {
+      "url": "/vacancy/list",
+      "name": "Recrutamento",
+      "icon": "menu-icon tf-icons ti ti-search",
+      "slug": "/vacancy/list"
+    },
+    {
+      "url": "/bancotalentos",
+      "name": "Banco de Talentos",
+      "icon": "menu-icon tf-icons ti ti-file-description",
+      "slug": "Banco de Talentos"
+    },
+    {
+      "url": "/matcher",
+      "name": "Matcher",
+      "icon": "menu-icon tf-icons ti ti-link",
+      "slug": "Matcher"
+    },
+    {
+      "url": "/treinamentos",
+      "name": "Treinamentos",
+      "icon": "menu-icon tf-icons ti-book", 
+      "slug": "treinamentos"
+    }
+    
+  ]
+}
