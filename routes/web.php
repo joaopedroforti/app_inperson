@@ -42,7 +42,9 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 // Rotas protegidas por autenticação
 Route::middleware(['auth'])->group(function () {
 
-    Route::get(['/', '/dashboard'], [DashboardController::class, 'index'])->name('Dashboard');
+    Route::get('/', [DashboardController::class, 'index']);
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
+
 
 
     Route::get('/treinamentos', [DashboardController::class, 'treinamentos'])->name('Treinamentos');
