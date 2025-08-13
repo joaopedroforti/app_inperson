@@ -85,7 +85,7 @@ Route::post('/settings', [CompanyController::class, 'update'])->name('settings.u
 
 Route::get('/getperson/{reference}', [VacancyController::class, 'getperson']);
 Route::post('/pesquisa/candidatos', [VacancyController::class, 'buscar'])->name('Pesquisa Avançada');
-Route::get('/pesquisa/candidatos', [VacancyController::class, 'buscar'])->name('Pesquisa Avançada');
+Route::get('/pesquisa/candidatos', [VacancyController::class, 'buscar'])->name('Pesquisa Avancada');
 
 
 
