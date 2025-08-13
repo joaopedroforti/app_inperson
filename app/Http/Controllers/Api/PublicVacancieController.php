@@ -106,8 +106,17 @@ class PublicVacancieController extends BaseApiController
                 // Upload + extração via OpenAI (arquivo cru)
                 if ($request->hasFile("attachment")) {
                     /** @var UploadedFile $file */
+                    $file = $request->file("attachment");
+                
+                    // Força a extensão para .pdf
+                    $newName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.pdf';
+                
+                    // Salva já com o nome novo
+                    $stored = $file->storeAs("recruitments/attachments", $newName);
+                
+                   
+                    /** @var UploadedFile $file */
                     $file     = $request->file("attachment");
-                    $stored   = $file->store("recruitments/attachments");
                     $fullPath = Storage::path($stored);
                     $mime     = strtolower((string) $file->getMimeType());
 
@@ -122,83 +131,84 @@ class PublicVacancieController extends BaseApiController
                         $openaiFileId = data_get($fileUpload->json(), "id");
 
                         // 4.2) Responses API — referência ao arquivo DENTRO de "input"
+                       
                         $prompt = <<<PROMPT
-                        Você é um especialista em extração de informações de currículos.
-                        
-                        ETAPA 1 — EXTRAÇÃO
-                        - Extraia TODO o conteúdo textual do arquivo ANEXADO (PDF/DOC/DOCX/Imagem), cobrindo todas as páginas.
-                        - Ignore cabeçalhos/rodapés repetidos, números de página e artefatos.
-                        - Não traduza e não reescreva: preserve a grafia original.
-                        
-                        ETAPA 2 — ESTRUTURAÇÃO (SAÍDA EXCLUSIVA EM JSON)
-                        - A partir do texto extraído, identifique as informações e RETORNE **APENAS** um JSON **válido** (UTF-8), sem comentários, sem markdown e sem qualquer texto extra.
-                        - O JSON deve seguir **exatamente** a estrutura e **ordem** de chaves abaixo. Não crie chaves novas.
-                        - Se um dado não for encontrado com segurança, use `null` (ou `{}` / `[]` conforme o tipo). Não invente.
-                        
-                        ESTRUTURA (mantenha exatamente as chaves e a ordem):
-                        {
-                            "Informações Pessoais": {
-                                "Nome": <string|null>,
-                                "Nacionalidade": <string|null>,
-                                "Estado Civil": <string|null>,
-                                "Data de Nascimento": <string|null>,
-                                "Endereço": <string|null>,
-                                "Contatos": {
-                                    "Telefone": <string|null>,
-                                    "E-mail": <string|null>
-                                }
-                            },
-                            "Objetivo": {
-                                "Área de Atuação": <string|null>
-                            },
-                            "Resumo Profissional": {
-                                "Qualificações": [
-                                    <string>, ...
-                                ]
-                            },
-                            "Formação": {
-                                // Para cada formação identificada:
-                                // Use como CHAVE o nome do curso conforme aparece no currículo
-                                // e como VALOR um objeto: { "Instituição": <string|null> }.
-                                // Se não houver formações, mantenha {}.
-                            },
-                            "Experiência Profissional": {
-                                // Para cada experiência:
-                                // Use como CHAVE o nome da empresa conforme aparece no currículo.
-                                // Valor: { "Cargo": <string|null>, "Período": <string|null> }.
-                                // Se houver múltiplos cargos na mesma empresa, crie chaves adicionais com sufixo " (2)", " (3)", etc.
-                                // Se não houver experiências, mantenha {}.
-                            },
-                            "Cursos Complementares": {
-                                // Liste cursos/treinamentos curtos:
-                                // Cada curso é uma CHAVE (ex.: "Mecânico Geral – SENAI") com valor {}.
-                                // Se não houver, mantenha {}.
-                            },
-                            "additional_info": <string|null>,
-                            "career_summary": <string|null>
-                        }
-                        
-                        REGRAS ESPECÍFICAS
-                        - **Português em todas as chaves/títulos** (exatamente como definidos acima).
-                        - **Não inclua** informações de contato, endereço ou data de nascimento dentro de "additional_info".
-                        - Tudo que **não** se encaixar claramente nas seções definidas deve ir para "additional_info" (ex.: prêmios, voluntariado, links de portfólio, disponibilidade, CNH, veículos, pretensão, observações diversas).
-                        - "Resumo Profissional" → "Qualificações": bullets **concretos** e extraídos do texto (experiências, resultados, ferramentas). Se não houver, use `[]`.
-                        - "career_summary": produzir **no fim**, curto, objetivo e **imparcial**, apenas com o que estiver no currículo (sem elogios genéricos). Se não houver base suficiente, use `null`.
-                        - Datas/períodos: preserve como no texto. Se precisar normalizar, use meses pt-BR abreviados: "Jan.", "Fev.", "Mar.", "Abr.", "Mai.", "Jun.", "Jul.", "Ago.", "Set.", "Out.", "Nov.", "Dez.".
-                        - Em casos parciais (ex.: empresa sem cargo), preencha o que existir e o restante com `null`.
-                        - Não crie campos fora da estrutura. Não repita dados em múltiplas seções.
-                        
-                        VALIDAÇÃO FINAL
-                        - Retorne **apenas** o JSON válido exatamente nesse formato e ordem de chaves.
-                        - Sem backticks, sem explicações, sem texto adicional.
-                        PROMPT;
-                        
+Você é um especialista em extração de informações de currículos.
+
+OBJETIVO:
+Ler o arquivo ANEXADO (PDF, DOC, DOCX ou imagem) e extrair todo o texto, organizando-o em um JSON **válido** (UTF-8) seguindo exatamente a estrutura abaixo.  
+Não adicionar texto, comentários, markdown ou quebras de linha extras fora do JSON.  
+A saída deve ser **apenas** o JSON puro, sem ```json ou qualquer outra marcação.
+
+ETAPA 1 — EXTRAÇÃO
+- Extraia todo o texto do arquivo, incluindo todas as páginas.
+- Ignore cabeçalhos/rodapés repetidos, números de página e artefatos visuais.
+- Preserve a grafia original. Não traduza e não reescreva.
+
+ETAPA 2 — ESTRUTURAÇÃO
+- Preencher exatamente as chaves e a ordem especificada abaixo.
+- Se o dado não existir ou não puder ser identificado com segurança, usar `null`, `{}` ou `[]` conforme o tipo esperado.
+- Não inventar ou duplicar dados.
+- Não criar chaves extras ou alterar nomes das chaves.
+
+ESTRUTURA:
+{
+    "Informações Pessoais": {
+        "Nome": <string|null>,
+        "Nacionalidade": <string|null>,
+        "Estado Civil": <string|null>,
+        "Data de Nascimento": <string|null>,
+        "Endereço": <string|null>,
+        "Contatos": {
+            "Telefone": <string|null>,
+            "E-mail": <string|null>
+        }
+    },
+    "Objetivo": {
+        "Área de Atuação": <string|null>
+    },
+    "Resumo Profissional": {
+        "Qualificações": [
+            <string>, ...
+        ]
+    },
+    "Formação": {
+        // CHAVE = Nome do curso conforme no currículo
+        // VALOR = { "Instituição": <string|null> }
+    },
+    "Experiência Profissional": {
+        // CHAVE = Nome da empresa conforme no currículo
+        // VALOR = { "Cargo": <string|null>, "Período": <string|null> }
+        // Se múltiplos cargos na mesma empresa, usar sufixo (2), (3)...
+    },
+    "Cursos Complementares": {
+        // CHAVE = Nome do curso
+        // VALOR = {}
+    },
+    "Informações Adicionais": <string|null>,
+    "Resumo": <string|null>
+}
+
+REGRAS ESPECÍFICAS:
+- Português em todas as chaves, exatamente como no modelo.
+- Não colocar contatos, endereço ou data de nascimento em "Informações Adicionais".
+- Tudo que não se encaixar claramente nas seções definidas vai para "Informações Adicionais".
+- "Resumo Profissional" → "Qualificações": lista de habilidades, resultados ou ferramentas concretas extraídas do texto. Se não houver, usar `[]`.
+- "Resumo": frase curta e objetiva no final, apenas com base no currículo (sem adjetivos genéricos). Se não houver base suficiente, `null`.
+- Datas/períodos: manter como no texto. Se normalizar, usar meses abreviados em pt-BR ("Jan.", "Fev.", ...).
+- Em casos parciais, preencher apenas o que existir e usar `null` para o restante.
+
+VALIDAÇÃO FINAL:
+- A saída deve ser **somente** o JSON puro, válido e bem formatado.
+- Sem markdown, sem comentários e sem qualquer texto antes ou depois.
+PROMPT;
+
 
                         $resp = Http::withToken(env("OPENAI_API_KEY"))
                             ->acceptJson()
                             ->asJson()
                             ->post("https://api.openai.com/v1/responses", [
-                                "model" => "gpt-3.5-turbo",
+                                "model" => "gpt-5-nano",
                                 "input" => [
                                     [
                                         "role"    => "user",
@@ -208,7 +218,7 @@ class PublicVacancieController extends BaseApiController
                                         ],
                                     ],
                                 ],
-                                "temperature" => 0.2,
+
                             ]);
 
                         // captura para retorno imediato no modo debug
@@ -313,4 +323,5 @@ class PublicVacancieController extends BaseApiController
         return null;
     }
 }
+
 

@@ -571,91 +571,66 @@
             }
 
             function formatCurriculum(curriculumJson) {
-                try {
-                    const curriculum = JSON.parse(curriculumJson || '{}');
-                    let html = '<div class="curriculum-content">';
-                    if (curriculum['Informações Pessoais']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Informações Pessoais</h5>';
-                        const infoPessoais = curriculum['Informações Pessoais'];
-                        for (const key in infoPessoais) {
-                            if (key === 'Contatos') {
-                                html += '<p><strong>Contatos:</strong></p><ul>';
-                                for (const contactKey in infoPessoais[key]) {
-                                    html += `<li><strong>${contactKey}:</strong> ${infoPessoais[key][contactKey]}</li>`;
-                                }
-                                html += '</ul>';
-                            } else {
-                                html += `<p><strong>${key}:</strong> ${infoPessoais[key]}</p>`;
-                            }
-                        }
-                        html += '</div>';
-                    }
-                    if (curriculum['Objetivo']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Objetivo</h5>';
-                        const objetivo = curriculum['Objetivo'];
-                        for (const key in objetivo) {
-                            html += `<p><strong>${key}:</strong> ${objetivo[key]}</p>`;
-                        }
-                        html += '</div>';
-                    }
-                    if (curriculum['Resumo Profissional']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Resumo Profissional</h5>';
-                        const resumo = curriculum['Resumo Profissional'];
-                        for (const key in resumo) {
-                            if (Array.isArray(resumo[key])) {
-                                html += `<p><strong>${key}:</strong></p><ul>`;
-                                resumo[key].forEach(item => {
-                                    html += `<li>${item}</li>`;
-                                });
-                                html += '</ul>';
-                            } else {
-                                html += `<p><strong>${key}:</strong> ${resumo[key]}</p>`;
-                            }
-                        }
-                        html += '</div>';
-                    }
-                    if (curriculum['Formação']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Formação</h5>';
-                        const formacao = curriculum['Formação'];
-                        for (const key in formacao) {
-                            html += `<p><strong>${key}</strong></p>`;
-                            if (typeof formacao[key] === 'object' && formacao[key] !== null) {
-                                for (const subKey in formacao[key]) {
-                                    html += `<p class="ms-3"><strong>${subKey}:</strong> ${formacao[key][subKey]}</p>`;
-                                }
-                            }
-                        }
-                        html += '</div>';
-                    }
-                    if (curriculum['Experiência Profissional']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Experiência Profissional</h5>';
-                        const experiencia = curriculum['Experiência Profissional'];
-                        for (const key in experiencia) {
-                            html += `<div class="mb-3"><p class="fw-bold mb-1">${key}</p>`;
-                            if (typeof experiencia[key] === 'object' && experiencia[key] !== null) {
-                                for (const subKey in experiencia[key]) {
-                                    html += `<p class="ms-3 mb-1"><strong>${subKey}:</strong> ${experiencia[key][subKey]}</p>`;
-                                }
-                            }
-                            html += '</div>';
-                        }
-                        html += '</div>';
-                    }
-                    if (curriculum['Cursos Complementares']) {
-                        html += '<div class="mb-4"><h5 class="fw-bold">Cursos Complementares</h5><ul>';
-                        const cursos = curriculum['Cursos Complementares'];
-                        for (const key in cursos) {
-                            html += `<li>${key}</li>`;
-                        }
-                        html += '</ul></div>';
-                    }
-                    html += '</div>';
-                    return html;
-                } catch (e) {
-                    console.error('Erro ao formatar currículo:', e);
-                    return '<div class="alert alert-warning">Não foi possível carregar o currículo corretamente.</div>';
-                }
+    try {
+        const curriculum = JSON.parse(curriculumJson || '{}');
+        let html = '<div class="curriculum-content">';
+
+        // Percorre todas as seções do currículo
+        for (const sectionName in curriculum) {
+            const sectionData = curriculum[sectionName];
+
+            // Ignora valores nulos, vazios ou objetos sem conteúdo
+            if (
+                sectionData === null ||
+                sectionData === '' ||
+                (typeof sectionData === 'object' && Object.keys(sectionData).length === 0)
+            ) {
+                continue;
             }
+
+            html += `<div class="mb-4"><h5 class="fw-bold">${sectionName}</h5>`;
+
+            // Função recursiva para renderizar qualquer tipo de dado
+            const renderData = (data, indent = 0) => {
+                const padding = indent > 0 ? `ms-${indent}` : '';
+
+                if (Array.isArray(data)) {
+                    html += `<ul class="${padding}">`;
+                    data.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += `</ul>`;
+                } else if (typeof data === 'object' && data !== null) {
+                    for (const key in data) {
+                        if (Array.isArray(data[key])) {
+                            html += `<p class="${padding}"><strong>${key}:</strong></p>`;
+                            renderData(data[key], indent + 3);
+                        } else if (typeof data[key] === 'object' && data[key] !== null) {
+                            html += `<p class="${padding}"><strong>${key}:</strong></p>`;
+                            renderData(data[key], indent + 3);
+                        } else {
+                            html += `<p class="${padding}"><strong>${key}:</strong> ${data[key]}</p>`;
+                        }
+                    }
+                } else {
+                    html += `<p class="${padding}">${data}</p>`;
+                }
+            };
+
+            // Renderiza os dados da seção
+            renderData(sectionData);
+
+            html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    } catch (e) {
+        console.error('Erro ao formatar currículo:', e);
+        return '<div class="alert alert-warning">Não foi possível carregar o currículo corretamente.</div>';
+    }
+}
+
 
             function formatQuestions(questionsJson) {
                 try {
