@@ -1,0 +1,238 @@
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #8c5ae8;
+    background-color: #fff;
+    color: #8c5ae8;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.step-circle:hover {
+    background-color: #8c5ae8;
+    color: #fff;
+    transform: scale(1.05);
+    cursor: grab;
+}
+.step-circle.active {
+    background-color: #8c5ae8;
+    color: #fff;
+    border-color: #8c5ae8;
+}
+
+.step-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+}
+
+/* Estilos para o card Kanban */
+.kanban-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    cursor: grab;
+    padding: 1rem;
+}
+.kanban-card:hover {
+    background-color: #f8f9fa;
+}
+.kanban-card h6.mb-0 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+.kanban-card .text-muted.small {
+    font-size: 0.8rem;
+}
+.kanban-card .kanban-icons-bottom i {
+    font-size: 1.2rem;
+}
+.kanban-card .kanban-icons-bottom .text-primary,
+.kanban-card .kanban-icons-bottom .text-secondary {
+    cursor: pointer;
+}
+
+.kanban-card .dragging {
+    opacity: 0.5;
+}
+
+.bar-container {
+    margin-bottom: 15px;
+}
+.bar-wrapper {
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.bar-fill {
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+.row.g-4 {
+    display: flex;
+    justify-content: space-between;
+}
+.col {
+    flex: 1;
+    margin-right: 15px;
+}
+.col:last-child {
+    margin-right: 0;
+}
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #6B5B95;
+}
+.modal-header {
+    border-bottom: 1px solid #E5E7EB;
+    padding: 20px;
+    background-color: #FFFFFF;
+}
+.modal-title {
+    color: #1E3A8A;
+    font-weight: bold;
+    font-size: 18px;
+}
+.stars {
+    color: #F59E0B;
+    font-size: 16px;
+    margin-left: 10px;
+}
+.stars i {
+    cursor: pointer;
+}
+.contact-info .form-label {
+    color: #4B5563;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.contact-info a {
+    color: #3B82F6;
+    text-decoration: none;
+    font-size: 14px;
+}
+.contact-info i {
+    margin-right: 5px;
+    color: #4B5563;
+}
+.form-section h6 {
+    color: #1E3A8A;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+.form-label {
+    color: #4B5563;
+    font-weight: bold;
+    font-size: 14px;
+}
+.form-control {
+    border: 1px solid #E5E7EB;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-family: 'Segoe UI', sans-serif;
+}
+.label {
+    width: 100px;
+    font-size: 14px;
+    color: #3f3f46;
+}
+.bar-wrapper {
+    flex: 1;
+    background-color: #e5e5e5;
+    border-radius: 999px;
+    height: 10px;
+    margin: 0 10px;
+    overflow: hidden;
+}
+.bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+#decisaoBar {
+    background-color: #9400D3;
+}
+#detalhismoBar {
+    background-color: #008B8B;
+}
+#entusiasmoBar {
+    background-color: #FF69B4;
+}
+#relationalBar {
+    background-color: #0077B6;
+}
+.percentage {
+    width: 55px;
+    text-align: right;
+    font-size: 14px;
+    color: #3f3f46;
+}
+
+
+/* CARD compacto */
+.candidate-card{
+    border-radius: 12px;
+    background:#fff;
+    box-shadow:0 4px 14px rgba(47,43,61,.06);
+    padding:8px 10px;                /* <-- menos altura */
+  }
+  
+  /* Linha 1: título à esquerda / tempo à direita */
+  .title-line{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; white-space:nowrap;    /* nada quebra aqui */
+  }
+  .title-left{
+    display:flex; align-items:center; gap:8px;
+    min-width:0;                     /* habilita ellipsis */
+    max-width:calc(100% - 120px);    /* reserva espaço p/ “12 dias” */
+  }
+  .candidate-name{
+    margin:0; font-weight:700; color:#4b4b5a; font-size:.95rem;
+  }
+  .linkedin-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:4px; background:#0a66c2;
+    color:#fff; font-weight:700; font-size:.8rem; text-decoration:none; line-height:1;
+  }
+  .candidate-date{ color:#8d8d98; font-size:.9rem; white-space:nowrap; }
+  
+  /* Linha 2: estrelas à esquerda / botões à direita */
+  .bottom-line{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:4px;                  /* bem curto */
+    white-space:nowrap;
+  }
+  
+  /* Estrelas mais compactas */
+  .kanban-stars .ti{ font-size:18px; line-height:1; }
+  .kanban-stars .ti + .ti{ margin-left:3px; }
+  .star--on{ color:#f5b301; }        /* dourado */
+  .star--off{ color:#d7d7db; }       /* cinza claro */
+  
+  /* Botões menores */
+  .icon-btn{
+    width:32px; height:32px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; text-decoration:none;
+  }
+  .icon-btn-primary{ background:rgba(105,108,255,.12); color:#696cff; }
+  .icon-btn-muted{   background:rgba(76,78,100,.08);   color:#6f6b7d;  }
+  .icon-btn .ti{ font-size:18px; }
+  
